@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"math"
 
 	"github.com/chzyer/readline"
 )
@@ -39,7 +40,8 @@ var regs = make(map[string]float64)
 %left '&'
 %left '+'  '-'
 %left '*'  '/'  '%'
-%left UMINUS      /*  supplies  precedence  for  unary  minus  */
+%left UMINUS	/*  supplies  precedence  for  unary  minus  */
+%right '^'		/* exponentiation */	
 
 %%
 list	: 	/* empty */
@@ -56,6 +58,7 @@ expr	:    DIGIT 			{ $$ = $1 }
 		|    expr '-' expr	{ $$  =  $1 - $3 }
 		|    expr '*' expr	{ $$  =  $1 * $3 }
 		|    expr '/' expr 	{ $$  =  $1 / $3 }
+		|    expr '^' expr 	{ $$  =  math.Pow($1, $3) }
 		|    '-'  expr     	%prec  UMINUS  { $$  = -$2  }
 		|   VAR  			{ $$  = regs[$1] }
 		;
