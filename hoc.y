@@ -16,19 +16,19 @@ import (
 
 	"github.com/chzyer/readline"
 )
-
 var regs = make(map[string]float64)
-
 %}
 
 // fields inside this union end up as the fields in a structure known
 // as ${PREFIX}SymType, of which a reference is passed to the lexer.
 %union{
 	val float64 
+	fn func(float64)float64
 	index string
 }
 %token <val> DIGIT 
-%token <index> VAR
+%token <index> VAR 
+%token <fn> BLTIN
 %token <val> IDENT
 %token <val> ERROR
 
@@ -45,7 +45,9 @@ var regs = make(map[string]float64)
 
 %%
 list	: 	/* empty */
-		| 	list stat 		'\n'	
+		| 	list stat 		'\n'
+		| 	list stat 		';'	
+		| 	list stat 		';'	'\n'
 		;
 
 stat	:    expr 			{ fmt.Printf( "%0.4f\n", $1 ) }
@@ -61,6 +63,7 @@ expr	:    DIGIT 			{ $$ = $1 }
 		|    expr '^' expr 	{ $$  =  math.Pow($1, $3) }
 		|    '-'  expr     	%prec  UMINUS  { $$  = -$2  }
 		|   VAR  			{ $$  = regs[$1] }
+		|   BLTIN '(' expr ')' { $$  = $1($3)  }
 		;
 %%      
 
@@ -76,7 +79,6 @@ func getHomeDir() string {
     }
     return os.Getenv("HOME")
 }
-
 func main() {
 
 	// readline for the prompt and history, a go implementation of

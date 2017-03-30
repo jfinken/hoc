@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 	"unicode"
@@ -14,6 +15,8 @@ const eof = -1
 // the tokens to be defined in the grammar.
 type Token int
 
+var builtins = make(map[string]func(float64) float64)
+
 // HocLex implements the HocLexer interface as defined
 // by goyacc
 type HocLex struct {
@@ -21,6 +24,19 @@ type HocLex struct {
 	sidx  int
 	start int
 	width int
+}
+
+// initialize the builtin function symbol table
+func init() {
+	builtins["sin"] = math.Sin
+	builtins["cos"] = math.Cos
+	builtins["tan"] = math.Tan
+	builtins["asin"] = math.Asin
+	builtins["acos"] = math.Acos
+	builtins["atan"] = math.Atan
+	builtins["sqrt"] = math.Sqrt
+	builtins["log"] = math.Log
+	builtins["log2"] = math.Log2
 }
 
 // Lex is the entry point for the lexer.  This func name signature and
@@ -53,6 +69,11 @@ func (lxr *HocLex) Next(lval *HocSymType) Token {
 		lval.val = f
 	} else if token == IDENT {
 		lval.index = value
+		// check if the identifier value is a builtin func
+		if _, ok := builtins[strings.ToLower(value)]; ok {
+			lval.fn = builtins[strings.ToLower(value)]
+			return BLTIN
+		}
 		return VAR
 	}
 	//fmt.Printf("token: %v, value: %v, lval.index: %s, lval.val: %0.2f\n",
