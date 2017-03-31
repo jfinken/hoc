@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"testing"
+	"unicode/utf8"
+)
 
 // Tables for the tests
 var eqnData = []struct {
@@ -40,6 +43,18 @@ var charData = []struct {
 	{"本", '本', 3, 3},
 }
 
+func TestMatch(t *testing.T) {
+	// skip empty string
+	for _, td := range eqnData[1:] {
+		lxr := &HocLex{src: td.in}
+
+		in, _ := utf8.DecodeRuneInString(td.in)
+		gotb := lxr.match(in)
+		if !gotb {
+			t.Errorf("lexer.match err for %s: Got %t, Exp: %t\n", td.in, gotb, true)
+		}
+	}
+}
 func TestRead(t *testing.T) {
 	for _, td := range charData {
 		lxr := &HocLex{src: td.in}
