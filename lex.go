@@ -16,6 +16,7 @@ const eof = -1
 type Token int
 
 var builtins = make(map[string]func(float64) float64)
+var consts = make(map[string]float64)
 
 // HocLex implements the HocLexer interface as defined
 // by goyacc
@@ -37,6 +38,9 @@ func init() {
 	builtins["sqrt"] = math.Sqrt
 	builtins["log"] = math.Log
 	builtins["log2"] = math.Log2
+	consts["pi"] = math.Pi
+	consts["torad"] = math.Pi / 180.0
+	consts["todeg"] = 180.0 / math.Pi
 }
 
 // Lex is the entry point for the lexer.  This func name signature and
@@ -69,10 +73,13 @@ func (lxr *HocLex) Next(lval *HocSymType) Token {
 		lval.val = f
 	} else if token == IDENT {
 		lval.index = value
-		// check if the identifier value is a builtin func
+		// check if the identifier value is a builtin func or const
 		if _, ok := builtins[strings.ToLower(value)]; ok {
 			lval.fn = builtins[strings.ToLower(value)]
 			return BLTIN
+		} else if _, ok := consts[strings.ToLower(value)]; ok {
+			lval.val = consts[strings.ToLower(value)]
+			return DIGIT
 		}
 		return VAR
 	}
