@@ -30,9 +30,12 @@ reader who forks the project.
  * tan, atan
  * log, log2
  * sqrt, exponentiation with `^`
+ * PI
+ * `todeg`, `torad`
 
 ## Generate, compile and run `hoc` 
 
+    $ go get github.com/chzyer/readline
 	$ goyacc -o hoc.go -p Hoc hoc.y
 	$ go build 
 
@@ -54,6 +57,8 @@ then:
     3.1416
     hoc> a = 4^2; sqrt(a)
     4.0000
+    hoc> 2*PI*todeg
+    360.0000
 
 ## References
  
