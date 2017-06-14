@@ -28,7 +28,7 @@ reader who forks the project.
  * sin, asin
  * cos, acos
  * tan, atan
- * log, log2
+ * log, log2, log10
  * sqrt, exponentiation with `^`
  * PI
  * `todeg`, `torad`

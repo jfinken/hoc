@@ -38,6 +38,7 @@ func init() {
 	builtins["sqrt"] = math.Sqrt
 	builtins["log"] = math.Log
 	builtins["log2"] = math.Log2
+	builtins["log10"] = math.Log10
 	consts["pi"] = math.Pi
 	consts["torad"] = math.Pi / 180.0
 	consts["todeg"] = 180.0 / math.Pi
