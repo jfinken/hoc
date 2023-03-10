@@ -35,16 +35,19 @@ reader who forks the project.
 
 ## Generate, compile and run `hoc` 
 
-    # Again, as of early versions of go:
+    # As of go 1.20.2:
+    $ go install golang.org/x/tools/cmd/goyacc@latest
+    $ cd src/github.com/jfinken/hoc
+	$ goyacc -o hoc.go -p Hoc hoc.y
+    $ go mod tidy
+    $ go install
+
+    # As of early versions of go:
     $ go get golang.org/x/tools/cmd/goyacc
     $ go get github.com/chzyer/readline
 	$ goyacc -o hoc.go -p Hoc hoc.y
 	$ go build 
 
-    # As of go 1.17:
-	$ goyacc -o hoc.go -p Hoc hoc.y
-    $ go mod tidy
-    $ go install
 
 then:
 
